@@ -47,6 +47,7 @@ pip install pywebview jedi
 # 运行 TinyPy
 python main.py
 ```
+请$不要$使用3.12
 
 ## 🖥️ 界面与操作指南
 
