@@ -429,8 +429,9 @@ infoGet.addEventListener('keydown', function (event) {
         // 判断是否需要额外缩进（例如上一行以冒号结尾）
         let extraIndent = '';
         if (lines.length > 1) {
-            const prevLine = lines[lines.length - 2];
+            const prevLine = lines[lines.length - 1];
             if (prevLine.trimEnd().endsWith(':')) {
+                //console.log('end with :')
                 extraIndent = '    '; // 4 个空格
             }
         }
