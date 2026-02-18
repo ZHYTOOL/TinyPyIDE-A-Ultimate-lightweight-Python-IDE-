@@ -54,6 +54,5 @@ api=Api()
 
 wd=wv.create_window("New*","./mainPage.html",js_api=api)
 #wd=wv.create_window("New*",html="<h1>ok</h1>",js_api=api)
-wv.start(debug=False)
-
+wv.start(debug=True)
 
