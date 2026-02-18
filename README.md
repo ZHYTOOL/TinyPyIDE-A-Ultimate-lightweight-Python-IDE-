@@ -29,7 +29,7 @@ A featherweight Python IDE built with pywebview and jedi, focusing on simplicity
 核心机制：通过 pywebview 桥接 Python 后端与 Web 前端，jedi 提供代码分析能力。
 
 # 🤝 贡献指南
-PyLite 还在早期阶段，非常欢迎你的参与！你可以：
+TinyPy 还在早期阶段，非常欢迎你的参与！你可以：
 
 提交 Issue 报告 bug 或提出新功能建议。
 
