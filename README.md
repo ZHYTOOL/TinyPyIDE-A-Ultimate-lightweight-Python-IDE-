@@ -2,6 +2,9 @@
 A featherweight Python IDE built with pywebview and jedi, focusing on simplicity and speed.
 
 # 📖 使用指南
+
+##你可以自行编译成可执行文件，若只是想试试，请转到下面的安装依赖与完整示例
+
 ## 界面布局
 顶部菜单栏：File（文件操作）、Edit（撤销/重做）、Run（运行/调试）、Help（库管理/关于）。
 
@@ -39,7 +42,7 @@ Fork 本仓库并克隆到本地。
 
 ### 安装依赖：pip install pywebview jedi
 
-### 修改代码后测试运行: python main.py
+### 完整示例 git clone https://github.com/ZHYTOOL/TinyPyIDE-A-Ultimate-lightweight-Python-IDE-.git && cd TinyPyIDE-A-Ultimate-lightweight-Python-IDE-/tinyPy && python main.py
 
 提交前请确保代码风格简洁，必要时添加注释。
 
