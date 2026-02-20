@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Textarea Overlay Code Aligned</title>
+    <link rel="stylesheet" href="./atom-one-dark.css">
+    <script src="./highlight-min.js"></script>
+    <style>
+        body {
+            background:#282C34;
+            margin:0;
+        }
+        .toolbar {
+            width: 100%;
+            height: 44px;
+            background: #21252b;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: fixed;
+            top:0;
+            left:0;
+            z-index: 100;
+        }
+        .toolbar .menu {
+            padding: 0 28px;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            transition: background .15s;
+        }
+        .toolbar .menu:hover {
+            background: #444950;
+        }
+
+        .code-container {
+            position: absolute;
+            top:44px;
+            left:0;
+            width:90%;
+            height:calc(100vh - 54px);
+            background: #282C34;
+            border-radius: 7px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+        .code-container::-webkit-scrollbar {
+            width: 10px;
+            background: #222;
+        }
+        .code-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #444950 60%, #35393f 100%);
+            border-radius: 8px;
+        }
+        .code-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #606672 60%, #444950 100%);
+        }
+        .code-container {
+            scrollbar-width: thin;
+            scrollbar-color: #444950 #222;
+        }
+
+        #linenumbers {
+            padding-top: 16px;
+            padding-bottom: 16px;
+            padding-left: 10px;
+            width: 48px;
+            min-width: 32px;
+            background: #23262e;
+            color: #5c6370;
+            font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: center;
+            user-select: none;
+            pointer-events: none;
+            border-top-left-radius: 7px;
+            border-bottom-left-radius: 7px;
+            overflow: hidden;
+            height: 100%;
+        }
+        .editor-stack {
+            flex: 1;
+            position: relative;
+            height: 100%;
+        }
+        #code, #infoGet,#warn {
+            font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+            font-size: 18px;
+            line-height: 1.6;
+            padding: 16px;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 100%;
+            background: transparent;
+            overflow: hidden;
+            height: 100%;
+        }
+        #code {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 0;
+            pointer-events: none;
+            white-space: pre-wrap;
+            /*word-break: break-all;*/
+            color: #eee;
+            overflow-wrap: break-word;
+        }
+        #infoGet {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 5;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: transparent;
+            caret-color: #ccc;
+            resize: none;
+        }
+        #warn{
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 1;
+            background: transparent;
+            pointer-events: none;
+            border: none;
+            outline: none;
+            color: red;
+            caret-color: transparent;
+            resize: none;
+            white-space: pre-wrap;      /* 保持换行 */
+            overflow: hidden;
+        }
+        pre.code-container {
+            padding:0;
+            margin:0;
+        }
+
+        /* 弹窗遮罩和内容 */
+        .popup-mask {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30,34,40,0.55);
+        }
+        .popup {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #242731;
+            color: #eee;
+            border-radius: 8px;
+            min-width: 240px;
+            min-height: 90px;
+            box-shadow: 0 12px 48px rgba(0,0,50,0.11);
+            padding: 22px 28px 18px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 16px;
+        }
+        .popup-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .popup-option {
+            margin: 5px 0;
+            padding: 5px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            color: #bcbcbc;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+        .popup-option:hover {
+            color: #fff;
+            background: #444950;
+        }
+        .popup-close {
+            margin-top: 14px;
+            align-self: flex-end;
+            padding: 3px 18px;
+            border-radius: 5px;
+            background: #363a47;
+            color: #eee;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        .popup-close:hover { background: #656c83;}
+    </style>
+</head>
+<body>
+<div class="toolbar">
+    <span class="menu" data-key="File">File</span>
+    <span class="menu" data-key="Edit">Edit</span>
+    <span class="menu" data-key="Run">Run</span>
+    <span class="menu" data-key="Help">Help</span>
+</div>
+
+<div class="popup-mask" id="popupMask">
+    <div class="popup" id="popupBox">
+        <!-- js填充内容 -->
+    </div>
+</div>
+
+<div class="code-container" id="code-container">
+    <div id="linenumbers"></div>
+    <div class="editor-stack">
+        <code class="language-python" id="code">#Start Coding!
+</code>
+        <textarea id="infoGet" spellcheck="false">#Start Coding!
+</textarea>
+        <textarea id="warn" spellcheck="false"></textarea>
+        <div id="choice"></div>
+    </div>
+</div>
+<script src="./mainEdit.js"></script>
+</body>
+</html>
